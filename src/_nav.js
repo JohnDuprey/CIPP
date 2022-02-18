@@ -100,8 +100,13 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'Tenants',
+        name: 'List Tenants',
         to: '/tenant/administration/tenants',
+      },
+      {
+        component: CNavItem,
+        name: 'List Licences',
+        to: '/tenant/administration/list-licenses',
       },
       {
         component: CNavItem,
@@ -171,6 +176,11 @@ const _nav = [
         component: CNavItem,
         name: 'List Alerts',
         to: '/security/reports/list-alerts',
+      },
+      {
+        component: CNavItem,
+        name: 'Device Compliance',
+        to: '/security/reports/list-device-compliance',
       },
     ],
   },
