@@ -80,11 +80,14 @@
     "exclude": ["/static/*.{png,jpg,gif}", "/css/*"]
   },
   "responseOverrides": {
+    "401": {
+      "rewrite": "/401"
+    },
     "403": {
-      "rewrite": "/cipp/403"
+      "rewrite": "/403"
     },
     "404": {
-      "rewrite": "/cipp/404"
+      "rewrite": "/404"
     }
   },
   "globalHeaders": {
