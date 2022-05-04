@@ -67,8 +67,12 @@
       "allowedRoles": ["admin"]
     },
     {
-      "route": "*",
+      "route": "/",
       "allowedRoles": ["admin", "editor", "readonly", "reader", "authenticated", "anonymous"]
+    },
+    {
+      "route": "*",
+      "allowedRoles": ["admin", "editor", "readonly", "reader"]
     }
   ],
   "navigationFallback": {
