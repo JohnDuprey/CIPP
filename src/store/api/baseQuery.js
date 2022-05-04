@@ -12,7 +12,7 @@ export const axiosQuery = async ({ path, method = 'get', params, data, hideToast
     return { data: result?.data }
   } catch (error) {
     // Catch API call on timed out SWA session and send to login page
-    if (error.response?.status === 302) {
+    if (error.response?.status === 401) {
       window.location.href = '/.auth/login/aad?post_login_redirect_uri=' + window.location.href
     }
     return {
