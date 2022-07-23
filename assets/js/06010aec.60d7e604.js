@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkcipp_docs=self.webpackChunkcipp_docs||[]).push([[9619],{7038:function(e){e.exports=JSON.parse('{"CIPP":{"allTagsPath":"/releases/tags","name":"CIPP","count":17,"permalink":"/releases/tags/cipp"},"CIPP-API":{"allTagsPath":"/releases/tags","name":"CIPP-API","count":9,"permalink":"/releases/tags/cipp-api"}}')}}]);
