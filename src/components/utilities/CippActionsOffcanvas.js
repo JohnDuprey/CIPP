@@ -1,14 +1,28 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import PropTypes from 'prop-types'
-import { CCallout, CListGroup, CListGroupItem, COffcanvasTitle, CSpinner } from '@coreui/react'
+import {
+  CButton,
+  CCallout,
+  CCard,
+  CCardBody,
+  CCardText,
+  CCardTitle,
+  CFormInput,
+  CListGroup,
+  CListGroupItem,
+  COffcanvasTitle,
+  CSpinner,
+} from '@coreui/react'
 import { CippOffcanvas, ModalService } from 'src/components/utilities'
 import { CippOffcanvasPropTypes } from 'src/components/utilities/CippOffcanvas'
 import { CippOffcanvasTable } from 'src/components/tables'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { stringCamelCase } from 'src/components/utilities/CippCamelCase'
+import ReactTimeAgo from 'react-time-ago'
 
 export default function CippActionsOffcanvas(props) {
+  const inputRef = useRef('')
   const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
@@ -16,7 +30,7 @@ export default function CippActionsOffcanvas(props) {
   const handleExternalLink = (link) => {
     window.open(link, '_blank')
   }
-  const handleModal = (modalMessage, modalUrl, modalType = 'GET', modalBody) => {
+  const handleModal = (modalMessage, modalUrl, modalType = 'GET', modalBody, modalInput) => {
     if (modalType === 'GET') {
       ModalService.confirm({
         body: (
@@ -31,15 +45,34 @@ export default function CippActionsOffcanvas(props) {
       ModalService.confirm({
         body: (
           <div style={{ overflow: 'visible' }}>
+            {modalInput && (
+              <div>
+                <CFormInput ref={inputRef} type="text" />
+              </div>
+            )}
             <div>{modalMessage}</div>
           </div>
         ),
         title: 'Confirm',
-        onConfirm: () => genericPostRequest({ path: modalUrl, values: modalBody }),
+        onConfirm: () => [
+          genericPostRequest({
+            path: modalUrl,
+            values: { ...modalBody, ...{ input: inputRef.current.value } },
+          }),
+        ],
       })
     }
   }
-  const handleOnClick = (link, modal, modalMessage, modalUrl, external, modalType, modalBody) => {
+  const handleOnClick = (
+    link,
+    modal,
+    modalMessage,
+    modalUrl,
+    external,
+    modalType,
+    modalBody,
+    modalInput,
+  ) => {
     if (link) {
       if (external) {
         handleExternalLink(link)
@@ -47,7 +80,7 @@ export default function CippActionsOffcanvas(props) {
         handleLink(link)
       }
     } else if (modal) {
-      handleModal(modalMessage, modalUrl, modalType, modalBody)
+      handleModal(modalMessage, modalUrl, modalType, modalBody, modalInput)
     }
   }
 
@@ -64,6 +97,25 @@ export default function CippActionsOffcanvas(props) {
     var actualUrl = url.replaceAll('{value1}', value1).replaceAll('{value2}', value2)
     genericGetRequest({ path: actualUrl })
   }
+  let cardContent
+  try {
+    cardContent = props.cards.map((action, index) => (
+      <>
+        <CCard className="border-top-dark border-top-3 mb-3">
+          <CCardBody>
+            <CCardTitle>Report Name: {action.label}</CCardTitle>
+            <CCardText>
+              {action.value && <Link to={action.link}>Status: {action.value}</Link>}
+            </CCardText>
+            <small>{action.timestamp && <ReactTimeAgo date={action.timestamp} />}</small>
+          </CCardBody>
+        </CCard>
+      </>
+    ))
+  } catch (error) {
+    console.error('An error occurred building OCanvas actions' + error.toString())
+  }
+
   const extendedInfoContent = <CippOffcanvasTable rows={props.extendedInfo} guid={props.id} />
   let actionsContent
   try {
@@ -81,6 +133,7 @@ export default function CippActionsOffcanvas(props) {
             action.external,
             action.modalType,
             action.modalBody,
+            action.modalInput,
           )
         }
         key={index}
@@ -90,7 +143,7 @@ export default function CippActionsOffcanvas(props) {
       </CListGroupItem>
     ))
   } catch (error) {
-    console.error('An error occored building OCanvas actions' + error.toString())
+    console.error('An error occurred building OCanvas actions' + error.toString())
   }
   let actionsSelectorsContent
   try {
@@ -115,7 +168,7 @@ export default function CippActionsOffcanvas(props) {
   } catch (error) {
     // When we create an Off Canvas control without selectors we will get this
     if (!error.toString().includes("Cannot read properties of undefined (reading '")) {
-      console.error('An error occored building OCanvas selectors' + error.toString())
+      console.error('An error occurred building OCanvas selectors' + error.toString())
     }
   }
   return (
@@ -140,14 +193,20 @@ export default function CippActionsOffcanvas(props) {
       {postResults.isError && (
         <CCallout color="danger">Could not connect to API: {postResults.error.message}</CCallout>
       )}
-      {getResults.isSuccess && <CCallout color="info">{getResults.data?.Results}</CCallout>}
+      {getResults.isSuccess && (
+        <CCallout color={getResults.data?.colour ? getResults.data?.colour : 'info'}>
+          {getResults.data?.Results}
+        </CCallout>
+      )}
       {getResults.isError && (
         <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
       )}
+
       <COffcanvasTitle>Extended Information</COffcanvasTitle>
+      {cardContent && cardContent}
       {extendedInfoContent}
       {<COffcanvasTitle>Actions</COffcanvasTitle>}
-      <CListGroup layout="vertical-md">
+      <CListGroup>
         {actionsContent}
         {actionsSelectorsContent}
       </CListGroup>
@@ -161,7 +220,7 @@ const CippActionsOffcanvasPropTypes = {
       label: PropTypes.string,
       value: PropTypes.any,
     }),
-  ).isRequired,
+  ),
   actions: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string,
@@ -171,8 +230,9 @@ const CippActionsOffcanvasPropTypes = {
       onClick: PropTypes.func,
       modal: PropTypes.bool,
       modalUrl: PropTypes.string,
-      modalBody: PropTypes.string,
+      modalBody: PropTypes.object,
       modalType: PropTypes.string,
+      modalInput: PropTypes.bool,
       modalMessage: PropTypes.string,
       external: PropTypes.bool,
     }),
@@ -187,8 +247,9 @@ const CippActionsOffcanvasPropTypes = {
       onClick: PropTypes.func,
       modal: PropTypes.bool,
       modalUrl: PropTypes.string,
-      modalBody: PropTypes.string,
+      modalBody: PropTypes.object,
       modalType: PropTypes.string,
+      modalInput: PropTypes.bool,
       modalMessage: PropTypes.string,
       external: PropTypes.bool,
     }),

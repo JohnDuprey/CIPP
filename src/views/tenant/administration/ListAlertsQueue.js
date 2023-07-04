@@ -94,10 +94,52 @@ const ListAlertsQueue = () => {
       cell: cellBooleanFormatter(),
     },
     {
+      name: 'Overused Licenses',
+      selector: (row) => row['OverusedLicenses'],
+      sortable: true,
+      exportSelector: 'OverusedLicenses',
+      cell: cellBooleanFormatter(),
+    },
+    {
       name: 'App Secret Expiry',
       selector: (row) => row['AppSecretExpiry'],
       sortable: true,
       exportSelector: 'AppSecretExpiry',
+      cell: cellBooleanFormatter(),
+    },
+    {
+      name: 'APN Cert Expiry',
+      selector: (row) => row['ApnCertExpiry'],
+      sortable: true,
+      exportSelector: 'ApnCertExpiry',
+      cell: cellBooleanFormatter(),
+    },
+    {
+      name: 'VPP Token Expiry',
+      selector: (row) => row['VppTokenExpiry'],
+      sortable: true,
+      exportSelector: 'VppTokenExpiry',
+      cell: cellBooleanFormatter(),
+    },
+    {
+      name: 'DEP Token Expiry',
+      selector: (row) => row['DepTokenExpiry'],
+      sortable: true,
+      exportSelector: 'DepTokenExpiry',
+      cell: cellBooleanFormatter(),
+    },
+    {
+      name: 'No CA Config',
+      selector: (row) => row['NoCAConfig'],
+      sortable: true,
+      exportSelector: 'NoCAConfig',
+      cell: cellBooleanFormatter(),
+    },
+    {
+      name: 'Sec Defaults Auto-Enable',
+      selector: (row) => row['SecDefaultsUpsell'],
+      sortable: true,
+      exportSelector: 'SecDefaultsUpsell',
       cell: cellBooleanFormatter(),
     },
     {
@@ -128,6 +170,18 @@ const ListAlertsQueue = () => {
           reportName: `AlertsQueue-List`,
           path: '/api/ListAlertsQueue',
           params: { TenantFilter: tenant?.defaultDomainName },
+          tableProps: {
+            selectableRows: true,
+            actionsList: [
+              {
+                label: 'Delete alerts',
+                color: 'info',
+                modal: true,
+                modalUrl: `/api/RemoveQueuedAlert?ID=!tenantId`,
+                modalMessage: 'Are you sure you want to delete these alerts?',
+              },
+            ],
+          },
         }}
       />
     </div>

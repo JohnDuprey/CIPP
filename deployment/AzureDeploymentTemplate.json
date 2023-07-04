@@ -115,18 +115,6 @@
           "dependsOn": [
             "[resourceId('Microsoft.KeyVault/vaults', variables('uniqueResourceNameBase'))]"
           ]
-        },
-        {
-          "type": "secrets",
-          "name": "exchangerefreshtoken",
-          "apiVersion": "2015-06-01",
-          "properties": {
-            "contentType": "text/plain",
-            "value": "ExchangeRefreshToken"
-          },
-          "dependsOn": [
-            "[resourceId('Microsoft.KeyVault/vaults', variables('uniqueResourceNameBase'))]"
-          ]
         }
       ],
       "dependsOn": ["[resourceId('Microsoft.Web/sites', variables('funcAppName'))]"]
@@ -179,10 +167,6 @@
               "value": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('uniqueResourceNameBase'), '.vault.azure.net/secrets/RefreshToken)')]"
             },
             {
-              "name": "ExchangeRefreshtoken",
-              "value": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('uniqueResourceNameBase'), '.vault.azure.net/secrets/ExchangeRefreshToken)')]"
-            },
-            {
               "name": "TenantID",
               "value": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('uniqueResourceNameBase'), '.vault.azure.net/secrets/tenantid)')]"
             },
@@ -201,6 +185,9 @@
           "dependsOn": ["[resourceId('Microsoft.Web/sites/', variables('funcAppName'))]"],
           "properties": {
             "RepoUrl": "[parameters('GithubAPIRepository')]",
+            "repositoryToken": "[parameters('GithubToken')]",
+            "token": "[parameters('GithubToken')]",
+
             "branch": "master",
             "publishRunbook": true,
             "IsManualIntegration": true
