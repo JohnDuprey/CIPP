@@ -4,4 +4,4 @@ rules:
     upstream: KelvinTegelaar:main
     mergeMethod: merge
   - base: dev
-    upstream: dev
+    upstream: KelvinTegelaar:dev
