@@ -5,3 +5,4 @@ rules:
     mergeMethod: merge
   - base: dev
     upstream: KelvinTegelaar:dev
+    mergeMethod: merge
