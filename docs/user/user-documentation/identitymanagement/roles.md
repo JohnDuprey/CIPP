@@ -1,7 +1,4 @@
 ---
-id: roles
-title: Roles
-slug: /usingcipp/identitymanagement/roles
 description: Review members for M365 roles
 ---
 

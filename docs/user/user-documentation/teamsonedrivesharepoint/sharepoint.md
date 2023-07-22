@@ -1,7 +1,4 @@
 ---
-id: sharepoint
-title: Sharepoint
-slug: /usingcipp/teamsonedrivesharepoint/sharepoint
 description: Review Sharepoint sites and usage
 ---
 

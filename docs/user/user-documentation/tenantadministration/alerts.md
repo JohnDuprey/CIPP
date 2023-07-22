@@ -1,11 +1,8 @@
 ---
-id: alerts
-title: Alerts
-slug: /usingcipp/tenantadministration/alerts
 description: Manage scheduled tenant alerts.
 ---
 
-# Alerts
+# Alerts Wizard
 
 CIPP offers a set of scheduled, recurring alert checks. Some of these duplicate Microsoft Alerts functionality in a more MSP-friendly manner, some are not available as a Microsoft Alert at this time.
 

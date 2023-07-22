@@ -1,7 +1,4 @@
 ---
-id: notifications
-title: Notifications
-slug: /usingcipp/settings/notifications
 description: View and amend notifications for your CIPP App
 ---
 
@@ -49,7 +46,4 @@ Enter a webhook url. Data is formatted based on the receiving server:
 
 {% hint style="info" %}
 Custom Webhook Formatting Need something different for your webhook? Can you write PowerShell? Submit a PR on this repo: [CIPP-API\Scheduler\_CIPPNotifications](https://github.com/KelvinTegelaar/CIPP-API/tree/dev/Scheduler\_CIPPNotifications).
-
-
 {% endhint %}
-

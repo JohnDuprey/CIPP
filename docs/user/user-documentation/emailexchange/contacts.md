@@ -1,7 +1,4 @@
 ---
-id: contacts
-title: Contacts
-slug: /usingcipp/emailexchange/contacts
 description: View & Edit Contacts in your M365 tenants
 ---
 

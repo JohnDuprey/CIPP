@@ -1,7 +1,4 @@
 ---
-id: offboardingwizard
-title: Offboarding Wizard
-slug: /usingcipp/identitymanagement/offboardingwizard
 description: Offboard the selected user with standard requirements
 ---
 

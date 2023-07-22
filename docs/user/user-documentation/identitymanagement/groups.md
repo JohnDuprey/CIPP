@@ -1,7 +1,4 @@
 ---
-id: groups
-title: Groups
-slug: /usingcipp/identitymanagement/groups
 description: Interact with Microsoft 365 groups.
 ---
 

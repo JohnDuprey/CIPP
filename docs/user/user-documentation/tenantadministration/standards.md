@@ -1,11 +1,8 @@
 ---
-id: standards
-title: Standards
-slug: /usingcipp/tenantadministration/standards
 description: Apply pre-defined standards to your Microsoft 365 CSP tenants.
 ---
 
-# Standards
+# Standards Wizard
 
 {% hint style="danger" %}
 Configuration Changes A standard applies actual configuration to the selected tenant, not just monitoring.
@@ -19,11 +16,10 @@ Plans exist to implement more standardised options and settings, along with an a
 
 Some of the standards are explained below:
 
-{% hint style="danger" %}
 Disabling an option within standards does NOT turn the setting off
 
 {% hint style="warning" %}
-Note that some standards may require one or more companion (Intune) polies to be set to be effective. 
+Note that some standards may require one or more companion (Intune) polies to be set to be effective.
 
 Deselecting an option on the standard simply means it will no longer try to apply that standard. However, it DOES NOT turn the setting off.
 
@@ -55,7 +51,7 @@ Low Impact Changes which have no user-facing impact or minimal impact.
 | Retain a deleted user OneDrive for 1 year                                   | Portal Only                                               | When a OneDrive user gets deleted, the sharepoint site is saved for 1 year and data can be retrieved from it.                                                                                                                                                                                                                                                                                                   |
 | Enable Auto-expanding archives                                              | Set-OrganizationConfig -AutoExpandingArchive              | Enables auto-expanding archives for the tenant. Does not enable archives for users.                                                                                                                                                                                                                                                                                                                             |
 
-Medium Impact Changes which have a user impact mitigated with a little communication.&#x20;
+Medium Impact Changes which have a user impact mitigated with a little communication.
 
 | Standard Name                                                       | Powershell equivalent cmdlet                            | Description                                                                                                                                                                                                                         |
 | ------------------------------------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -78,9 +74,8 @@ High Impact Changes which should require thought and planning. Should ideally co
 | Disable Resharing by External Users                              | Portal Only                                                                                                                                                                                          | Disables (guest) users from resharing a file to more users.                                                                                                                                                                                                                                                   |
 | Disable site creation by standard users                          | Portal Only                                                                                                                                                                                          | Disables standard users from creating sharepoint sites, also disables the ability to fully create teams                                                                                                                                                                                                       |
 | Only allow users to sync OneDrive from AAD joined devices        | Portal Only                                                                                                                                                                                          | Only allow AAD joined devices to sync using the onedrive client. Users without will receive an error.                                                                                                                                                                                                         |
-| Disable Shared Mailbox AAD accounts                              | Get-mailbox &  Disable-user                                                                                                                                                                          | Shared mailboxes can be directly logged into if the password is reset, this presents a security risk as do all shared login credentials. Microsoft's recommendation is to disable the user account for shared mailboxes. It would be a good idea to review the sign-in reports to establish potential impact. |
+| Disable Shared Mailbox AAD accounts                              | Get-mailbox & Disable-user                                                                                                                                                                           | Shared mailboxes can be directly logged into if the password is reset, this presents a security risk as do all shared login credentials. Microsoft's recommendation is to disable the user account for shared mailboxes. It would be a good idea to review the sign-in reports to establish potential impact. |
 | Require admin consent for applications (Prevent OAuth phishing.) | Update-MgPolicyAuthorizationPolicy                                                                                                                                                                   | Requires users to get administrator consent before sharing data with applications. You can preapprove specific applications.                                                                                                                                                                                  |
 | Undo App Consent Standard                                        | Update-MgPolicyAuthorizationPolicy                                                                                                                                                                   | Undoes the Oauth phising standard                                                                                                                                                                                                                                                                             |
 | Enable Security Defaults                                         | [https://www.cyberdrain.com/automating-with-powershell-enabling-secure-defaults-and-sd-explained/](https://www.cyberdrain.com/automating-with-powershell-enabling-secure-defaults-and-sd-explained/) | Enables SD for the tenant, which disables all forms of basic authentication and enforces users to configure MFA. Users are only prompted for MFA when a logon is considered 'suspect' by Microsoft.                                                                                                           |
 | Enable per-user MFA for all user (Legacy)                        | Get-msoluser                                                                                                                                                                                         | set-msoluser -StrongAuthenticationRequirements                                                                                                                                                                                                                                                                |
-

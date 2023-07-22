@@ -1,7 +1,4 @@
 ---
-id: tenants
-title: Tenants
-slug: /usingcipp/tenantadministration/tenants
 description: View and manage your Microsoft 365 CSP tenants.
 ---
 

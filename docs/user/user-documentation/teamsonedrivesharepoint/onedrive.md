@@ -1,7 +1,4 @@
 ---
-id: onedrive
-title: OneDrive
-slug: /usingcipp/teamsonedrivesharepoint/onedrive
 description: View OneDrive information for users in your Microsoft 365 tenants.
 ---
 

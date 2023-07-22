@@ -1,7 +1,4 @@
 ---
-id: bestpracticeanalyser
-title: Best Practice Analyser
-slug: /usingcipp/tenantadministration/bestpracticeanalyser
 description: Audit your tenant against best practices.
 ---
 
@@ -118,4 +115,3 @@ Partial Data If you are only seeing partial data after waiting a while for the d
 
 You can test this with the Access Check by navigating to **CIPP Settings > Configuration Settings > Tenant Access Check**.
 {% endhint %}
-

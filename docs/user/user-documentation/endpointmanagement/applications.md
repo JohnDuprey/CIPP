@@ -1,11 +1,8 @@
 ---
-id: applications
-title: List Applications
-slug: /usingcipp/endpointmanagement/applications
 description: Interact with Microsoft Endpoint Manager applications.
 ---
 
-# List Applications
+# Applications
 
 The List Applications page shows a list of line-of-business applications configured for deployment in Microsoft Endpoint Manager / Intune.
 

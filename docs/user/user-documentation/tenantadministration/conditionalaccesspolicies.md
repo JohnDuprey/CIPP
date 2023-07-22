@@ -1,11 +1,8 @@
 ---
-id: conditionalaccesspolicies
-title: Conditional Access Policies
-slug: /usingcipp/tenantadministration/conditionalaccesspolicies
 description: Review all Conditional Access Polcies per tenant
 ---
 
-# Conditional Access Policies
+# Policies
 
 This page lists all the Conditional Access Policies on the selected tenant. This lists everything that's available in the Microsoft Endpoint Manager (MEM) portal, including the applications the CA applies to and used built-in controls.
 
@@ -29,4 +26,3 @@ This page lists all the Conditional Access Policies on the selected tenant. This
 | Exclude Applications | Any Azure AD applications excluded.                   |
 | Control Operator     | The operator used to combine the filters.             |
 | Built-in Controls    | Any built-in controls applied.                        |
-

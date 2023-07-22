@@ -1,7 +1,4 @@
 ---
-id: addofficeapp
-title: Add Office App
-slug: /usingcipp/endpointmanagement/addofficeapp
 description: Deploy Office applications.
 ---
 

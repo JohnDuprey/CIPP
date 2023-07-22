@@ -1,14 +1,12 @@
 ---
-id: defender
-title: Defender Status
 description: Deploy applications using the Chocolatey package manager.
-slug: /usingcipp/endpointmanagement/defender
 ---
 
-This page lists the defender status for all enrolled devices in a tenant.
-This includes whether there are active threats, the status of various components / services, the status of scans and, whether the device requires action.
+# Defender Status
 
-## Details
+This page lists the defender status for all enrolled devices in a tenant. This includes whether there are active threats, the status of various components / services, the status of scans and, whether the device requires action.
+
+### Details
 
 | Field                      | Description                                             |
 | -------------------------- | ------------------------------------------------------- |
@@ -23,8 +21,6 @@ This includes whether there are active threats, the status of various components
 | Reboot Required            | Whether the device requires a restart.                  |
 | Attention Required         | Whether the device requires attention.                  |
 
-## Known Issues / Limitations
+### Known Issues / Limitations
 
-- You must be a current Microsoft Lighthouse partner, and your tenants must be on-boarded to Lighthouse to use this functionality
-
-<OtherIssues />
+* You must be a current Microsoft Lighthouse partner, and your tenants must be on-boarded to Lighthouse to use this functionality

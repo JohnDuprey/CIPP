@@ -1,7 +1,4 @@
 ---
-id: users
-title: Users
-slug: /usingcipp/identitymanagement/users
 description: Interact with Microsoft 365 users.
 ---
 

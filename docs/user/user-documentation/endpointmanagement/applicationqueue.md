@@ -1,11 +1,8 @@
 ---
-id: applicationqueue
-title: List Application Queue
-slug: /usingcipp/endpointmanagement/applicationqueue
 description: Show applications queued for deployment to your tenants.
 ---
 
-# List Application Queue
+# Application Queue
 
 You can view a list of all applications queued for deployment to your tenants, any application listed here is going to be deployed to your tenants. The application will be removed from this list after deployment, unless it is deployed to "All Tenants"
 

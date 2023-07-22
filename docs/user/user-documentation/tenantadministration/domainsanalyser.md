@@ -1,7 +1,4 @@
 ---
-id: domainsanalyser
-title: Domains Analyser
-slug: /usingcipp/tenantadministration/domainsanalyser
 description: Check your managed domains against security and configuration best practices.
 ---
 
@@ -106,4 +103,3 @@ Make sure both CIPP-API and CIPP are fully up-to-date. There is extensive loggin
 ### Feature Requests / Ideas
 
 Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+) on GitHub.
-

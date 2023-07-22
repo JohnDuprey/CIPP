@@ -1,11 +1,8 @@
 ---
-id: addchocoapp
-title: Add Chocolatey App
-slug: /usingcipp/endpointmanagement/addchocoapp
 description: Deploy applications using the Chocolatey package manager.
 ---
 
-# Add Chocolatey App
+# Add Choco App
 
 You can add an application deployment utilising [Chocolatey](https://chocolatey.org/) by executing this wizard. The wizard guides you through the steps and provides the ability for you to deploy an app to many tenants at the same time.
 
