@@ -34,4 +34,16 @@ Use this to run the following tests on your domain and an optional list of subdo
 * DNS name mismatch
 * Certificate chain validation
 
-### Known Issues / Limitations
+### API Calls
+
+The following APIs are called on this page:
+
+
+
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ListDomainHealth" method="get" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
+
+### Feature Requests / Ideas
+
+Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+) on GitHub.

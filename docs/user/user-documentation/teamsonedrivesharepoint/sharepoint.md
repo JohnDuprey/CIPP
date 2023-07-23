@@ -17,4 +17,14 @@ This page lists SharePoint site usage. You can also see file count, activity and
 | Used (GB)                 | The total size in GB in the site document library.            |
 | Allocated (GB)            | The total space in GB available in the site document library. |
 
-###
+### API Calls
+
+The following APIs are called on this page:
+
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ListSites" method="get" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
+
+### Feature Requests / Ideas
+
+Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+) on GitHub.

@@ -16,8 +16,14 @@ This page provides the ability for you to edit/override the default Enrollment S
 * Reset
 * Let users use Device if Setup Fails
 
-#### Known Issues / Limitations <a href="#addstatuspage-knownissues" id="addstatuspage-knownissues"></a>
+### API Calls
 
-You can only edit the default profile, and not create new ones. This profile is per default set to "All computers and devices"
+The following APIs are called on this page:
 
-**400** - You've entered wrong data, check the information and try again.
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/AddEnrollment" method="post" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
+
+### Feature Requests / Ideas
+
+Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+) on GitHub.

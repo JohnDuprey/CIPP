@@ -19,3 +19,19 @@ This script assists with excluding CIPP from customer conditional access policie
 #### Migrate-CippStorage.ps1
 
 This script will automate the process of converting the function app storage from v2 to v1 in accordance with [Microsoft's official recommendation](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-storage-providers#azure-storage). This script may need to be run multiple times to fully complete the migration, make sure to save the contents to a file before reloading the web page.
+
+### API Calls
+
+The following APIs are called on this page:
+
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/PublicScripts" method="get" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
+
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ExecMaintenanceScripts" method="get" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
+
+### Feature Requests / Ideas
+
+Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+) on GitHub.
