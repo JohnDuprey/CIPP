@@ -81,7 +81,7 @@ export const Layout = (props) => {
   const [menuItems, setMenuItems] = useState(nativeMenuItems);
   const currentTenant = settings?.currentTenant;
   const currentRole = ApiGetCall({
-    url: "/.auth/me",
+    url: "/api/me",
     queryKey: "authmecipp",
   });
 
