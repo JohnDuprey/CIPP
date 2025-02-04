@@ -12,7 +12,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
-import { Create, Save, Sync } from "@mui/icons-material";
+import { Create, Key, Save, Sync } from "@mui/icons-material";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
@@ -97,16 +97,27 @@ const CippApiClientManagement = () => {
       url: "/api/ExecApiClient",
       data: {
         Action: "AddUpdate",
-        ClientID: "ClientID",
+        ClientId: "ClientId",
       },
       relatedQueryKeys: ["ApiClients"],
+    },
+    {
+      label: "Reset Application Secret",
+      icon: <Key />,
+      confirmText: "Are you sure you want to reset the application secret?",
+      type: "POST",
+      url: "/api/ExecApiClient",
+      data: {
+        Action: "ResetSecret",
+        ClientId: "ClientId",
+      },
     },
     {
       label: "Copy API Scope",
       icon: <ClipboardDocumentIcon />,
       noConfirm: true,
       customFunction: (row, action, formData) => {
-        var scope = `api://${row.ClientID}/.default`;
+        var scope = `api://${row.ClientId}/.default`;
         navigator.clipboard.writeText(scope);
       },
     },
@@ -118,7 +129,7 @@ const CippApiClientManagement = () => {
       url: "/api/ExecApiClient",
       data: {
         Action: "Delete",
-        ClientId: "{ClientID}",
+        ClientId: "ClientId",
       },
       relatedQueryKeys: ["ApiClients"],
     },
@@ -163,7 +174,7 @@ const CippApiClientManagement = () => {
             data: { Action: "List" },
             dataKey: "Results",
           }}
-          simpleColumns={["Enabled", "AppName", "ClientID", "Role", "IPRange"]}
+          simpleColumns={["Enabled", "AppName", "ClientId", "Role", "IPRange"]}
           queryKey={`ApiClients`}
           cardButton={
             <>
