@@ -12,11 +12,9 @@ import {
 } from "@heroicons/react/24/outline";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
-import { Create, Key, Save, Sync } from "@mui/icons-material";
+import { Create, Key, Save } from "@mui/icons-material";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
-import { getCippFormatting } from "../../utils/get-cipp-formatting";
-import { noConflict } from "leaflet";
 
 const CippApiClientManagement = () => {
   const [openAddClientDialog, setOpenAddClientDialog] = useState(false);
@@ -64,6 +62,7 @@ const CippApiClientManagement = () => {
       ),
       confirmText: "Update the API client settings:",
       hideBulk: true,
+      setDefaultValues: true,
       fields: [
         {
           type: "autoComplete",
@@ -85,7 +84,7 @@ const CippApiClientManagement = () => {
           freeSolo: true,
           creatable: true,
           options: [],
-          placeholder: "Enter IP Range(s)",
+          placeholder: "Enter IP Range (Single hosts or CIDR notation)",
         },
         {
           type: "switch",
@@ -131,6 +130,13 @@ const CippApiClientManagement = () => {
         Action: "Delete",
         ClientId: "ClientId",
       },
+      fields: [
+        {
+          type: "switch",
+          name: "RemoveAppReg",
+          label: "Remove App Registration",
+        },
+      ],
       relatedQueryKeys: ["ApiClients"],
     },
   ];
@@ -258,7 +264,7 @@ const CippApiClientManagement = () => {
             freeSolo: true,
             creatable: true,
             options: [],
-            placeholder: "Enter IP Range(s)",
+            placeholder: "Enter IP Range (Single hosts or CIDR notation)",
           },
           {
             type: "switch",
