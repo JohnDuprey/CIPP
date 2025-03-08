@@ -53,12 +53,9 @@ const Page = () => {
     data: {
       TenantFilter: "",
       Endpoint: "tenantRelationships/delegatedAdminRelationships",
-      $filter:
-        "(status eq 'active' or status eq 'approvalPending') and not startsWith(displayName,'MLT_')",
     },
     queryKey: "GDAPRelationshipOnboarding",
   });
-
   const onboardingList = ApiGetCallWithPagination({
     url: "/api/ListTenantOnboarding",
     queryKey: "ListTenantOnboarding",
@@ -108,7 +105,11 @@ const Page = () => {
           (relationship) => relationship?.id === queryId
         );
 
-        if (relationship) {
+        if (
+          relationship &&
+          (relationship?.status === "active" || relationship?.status === "approvalPending") &&
+          !relationship?.customer?.displayName.startsWith("MLT_")
+        ) {
           formValue = {
             label:
               (relationship?.customer?.displayName ?? "Pending Invite") +
@@ -206,8 +207,8 @@ const Page = () => {
 
       var missingDefaults = [];
       cippDefaults.forEach((defaultRole) => {
-        if (!relationshipRoles?.find((role) => defaultRole.value === role.roleDefinitionId)) {
-          missingDefaults.push(role);
+        if (!relationshipRoles?.find((role) => defaultRole?.value === role?.roleDefinitionId)) {
+          missingDefaults.push(defaultRole);
         }
       });
       setMissingDefaults(missingDefaults.length > 0);
@@ -409,7 +410,9 @@ const Page = () => {
                     {(currentInvite || selectedRole) && rolesMissingFromRelationship.length > 0 && (
                       <Alert severity="warning">
                         The following roles are not mapped with the current template:{" "}
-                        {rolesMissingFromRelationship.map((role) => role.Name).join(", ")}
+                        {rolesMissingFromRelationship
+                          .map((role) => role?.Name ?? "Unknown Role")
+                          .join(", ")}
                       </Alert>
                     )}
                     {(currentInvite || selectedRole) &&
