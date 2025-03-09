@@ -18,16 +18,17 @@ export const PrivateRoute = ({ children, routeType }) => {
   }
 
   let roles = null;
-  if (null !== profile?.clientPrincipal) {
+
+  if (null !== profile?.clientPrincipal && undefined !== profile) {
     roles = profile?.clientPrincipal?.userRoles;
-  } else if (null === profile?.clientPrincipal) {
+  } else if (null === profile?.clientPrincipal || undefined === profile) {
     return <UnauthenticatedPage />;
   }
   if (null === roles) {
     return <UnauthenticatedPage />;
   } else {
     const blockedRoles = ["anonymous", "authenticated"];
-    const userRoles = roles.filter((role) => !blockedRoles.includes(role));
+    const userRoles = roles?.filter((role) => !blockedRoles.includes(role)) ?? [];
     const isAuthenticated = userRoles.length > 0 && !error;
     const isAdmin = roles.includes("admin");
     if (routeType === "admin") {

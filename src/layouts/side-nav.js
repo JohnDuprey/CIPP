@@ -159,63 +159,64 @@ export const SideNav = (props) => {
 
   const randomimg = randomSponsorImage();
   return (
-    <Drawer
-      open
-      variant="permanent"
-      PaperProps={{
-        onMouseEnter: () => {
-          setHovered(true);
-        },
-        onMouseLeave: () => {
-          setHovered(false);
-        },
-        sx: {
-          backgroundColor: "background.default",
-          height: `calc(100% - ${TOP_NAV_HEIGHT}px)`,
-          overflowX: "hidden",
-          top: TOP_NAV_HEIGHT,
-          transition: "width 250ms ease-in-out",
-          width: collapse ? SIDE_NAV_COLLAPSED_WIDTH : SIDE_NAV_WIDTH,
-          zIndex: (theme) => theme.zIndex.appBar - 100,
-        },
-      }}
-    >
-      <Scrollbar
-        sx={{
-          height: "100%",
-          overflowX: "hidden",
-          "& .simplebar-content": {
-            height: "100%",
-          },
-        }}
-      >
-        <Box
-          component="nav"
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            height: "100%",
-            p: 2,
+    <>
+      {profile?.clientPrincipal && profile?.clientPrincipal?.userRoles?.length > 2 && (
+        <Drawer
+          open
+          variant="permanent"
+          PaperProps={{
+            onMouseEnter: () => {
+              setHovered(true);
+            },
+            onMouseLeave: () => {
+              setHovered(false);
+            },
+            sx: {
+              backgroundColor: "background.default",
+              height: `calc(100% - ${TOP_NAV_HEIGHT}px)`,
+              overflowX: "hidden",
+              top: TOP_NAV_HEIGHT,
+              transition: "width 250ms ease-in-out",
+              width: collapse ? SIDE_NAV_COLLAPSED_WIDTH : SIDE_NAV_WIDTH,
+              zIndex: (theme) => theme.zIndex.appBar - 100,
+            },
           }}
         >
-          <Box
-            component="ul"
+          <Scrollbar
             sx={{
-              flexGrow: 1,
-              listStyle: "none",
-              m: 0,
-              p: 0,
+              height: "100%",
+              overflowX: "hidden",
+              "& .simplebar-content": {
+                height: "100%",
+              },
             }}
           >
-            {renderItems({
-              collapse,
-              depth: 0,
-              items: processedItems,
-              pathname,
-            })}
-          </Box>
-          {profile?.clientPrincipal && (
-            <>
+            <Box
+              component="nav"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                height: "100%",
+                p: 2,
+              }}
+            >
+              <Box
+                component="ul"
+                sx={{
+                  flexGrow: 1,
+                  listStyle: "none",
+                  m: 0,
+                  p: 0,
+                }}
+              >
+                {renderItems({
+                  collapse,
+                  depth: 0,
+                  items: processedItems,
+                  pathname,
+                })}
+              </Box>
+
               <Divider />
               <Typography
                 color="text.secondary"
@@ -238,11 +239,11 @@ export const SideNav = (props) => {
                   width={"100px"}
                 />
               </Box>
-            </>
-          )}
-        </Box>
-      </Scrollbar>
-    </Drawer>
+            </Box>
+          </Scrollbar>
+        </Drawer>
+      )}
+    </>
   );
 };
 

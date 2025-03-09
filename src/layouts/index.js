@@ -90,8 +90,8 @@ export const Layout = (props) => {
 
   useEffect(() => {
     if (currentRole.isSuccess && !currentRole.isFetching) {
-      const userRoles = currentRole.data?.clientPrincipal?.userRoles;
-      if (!userRoles) {
+      const userRoles = currentRole.data?.clientPrincipal?.userRoles ?? [];
+      if (userRoles?.length <= 2) {
         setMenuItems([]);
         setHideSidebar(true);
         return;
@@ -131,6 +131,7 @@ export const Layout = (props) => {
   const userSettingsAPI = ApiGetCall({
     url: "/api/ListUserSettings",
     queryKey: "userSettings",
+    waiting: !hideSidebar,
   });
 
   useEffect(() => {
@@ -174,11 +175,11 @@ export const Layout = (props) => {
   });
 
   useEffect(() => {
-    if (version.isFetched && !alertsAPI.isFetched) {
+    if (!hideSidebar && version.isFetched && !alertsAPI.isFetched) {
       alertsAPI.waiting = true;
       alertsAPI.refetch();
     }
-  }, [version, alertsAPI]);
+  }, [version, alertsAPI, hideSidebar]);
 
   useEffect(() => {
     if (alertsAPI.isSuccess && !alertsAPI.isFetching) {
