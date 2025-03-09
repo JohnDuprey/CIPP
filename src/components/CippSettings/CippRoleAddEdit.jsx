@@ -17,7 +17,7 @@ import Grid from "@mui/material/Grid2";
 import { ApiGetCall, ApiGetCallWithPagination, ApiPostCall } from "../../api/ApiCall";
 import { CippOffCanvas } from "/src/components/CippComponents/CippOffCanvas";
 import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormTenantSelector";
-import { Save } from "@mui/icons-material";
+import { Save, Warning, WarningOutlined } from "@mui/icons-material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { useForm, useFormState, useWatch } from "react-hook-form";
@@ -374,6 +374,10 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
                 required={true}
               />
             )}
+            {selectedRole && isBaseRole && ['admin','superadmin'].includes(selectedRole) && (
+              <Alert color="warning" icon={<WarningOutlined />}>
+                This is a highly privileged role and overrides any custom role restrictions.
+              </Alert>)}
             {cippApiRoleSelected && (
               <Alert color="info">
                 This is the default role for all API clients in the CIPP-API integration. If you
