@@ -3,6 +3,11 @@ import { Box, Button, SvgIcon } from "@mui/material";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import NextLink from "next/link";
+import { CippPropertyListCard } from "../../components/CippCards/CippPropertyListCard";
+import { getCippTranslation } from "../../utils/get-cipp-translation";
+import { getCippFormatting } from "../../utils/get-cipp-formatting";
+import { Stack } from "@mui/system";
+import { CippCopyToClipBoard } from "../CippComponents/CippCopyToClipboard";
 
 const CippRoles = () => {
   const actions = [
@@ -29,10 +34,52 @@ const CippRoles = () => {
         Action: "Delete",
         RoleName: "RoleName",
       },
-      condition: (row) => row.Type === "Custom",
+      condition: (row) => row?.Type === "Custom",
       relatedQueryKeys: ["customRoleList"],
     },
   ];
+
+  const offCanvas = {
+    children: (data) => {
+      const includeProps = ["RoleName", "Type", "EntraGroup", "AllowedTenants", "BlockedTenants"];
+      const keys = includeProps.filter((key) => Object.keys(data).includes(key));
+      const properties = [];
+      keys.forEach((key) => {
+        if (data[key] && data[key].length > 0) {
+          properties.push({
+            label: getCippTranslation(key),
+            value: getCippFormatting(data[key], key),
+          });
+        }
+      });
+
+      if (data["Permissions"] && Object.keys(data["Permissions"]).length > 0) {
+        properties.push({
+          label: "Permissions",
+          value: (
+            <Stack spacing={0.5}>
+              {Object.keys(data["Permissions"])
+                .sort()
+                .map((permission, idx) => (
+                  <Box key={idx}>
+                    <CippCopyToClipBoard type="chip" text={data["Permissions"]?.[permission]} />
+                  </Box>
+                ))}
+            </Stack>
+          ),
+        });
+      }
+
+      return (
+        <CippPropertyListCard
+          cardSx={{ p: 0, m: -2 }}
+          title="Role Details"
+          propertyItems={properties}
+          actionItems={actions}
+        />
+      );
+    },
+  };
 
   return (
     <Box>
@@ -58,7 +105,8 @@ const CippRoles = () => {
           url: "/api/ListCustomRole",
         }}
         queryKey="customRoleTable"
-        simpleColumns={["RoleName", "Type", "EntraGroup"]}
+        simpleColumns={["RoleName", "Type", "EntraGroup", "AllowedTenants", "BlockedTenants"]}
+        offCanvas={offCanvas}
       />
     </Box>
   );
