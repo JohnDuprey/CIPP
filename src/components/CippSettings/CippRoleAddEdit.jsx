@@ -28,7 +28,7 @@ import cippRoles from "../../data/cipp-roles.json";
 export const CippRoleAddEdit = ({ selectedRole }) => {
   const updatePermissions = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: ["customRoleList"],
+    relatedQueryKeys: ["customRoleList", "customRoleTable"],
   });
 
   const [allTenantSelected, setAllTenantSelected] = useState(false);
@@ -45,7 +45,9 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
   const formState = useFormState({ control: formControl.control });
 
   const validateRoleName = (value) => {
-    if (customRoleList.some((role) => role.RowKey.toLowerCase() === value.toLowerCase())) {
+    if (
+      customRoleList?.pages?.[0]?.some((role) => role.RowKey.toLowerCase() === value.toLowerCase())
+    ) {
       return `Role '${value}' already exists`;
     }
     return true;
@@ -70,7 +72,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
     data: customRoleList = [],
     isFetching: customRoleListFetching,
     isSuccess: customRoleListSuccess,
-  } = ApiGetCall({
+  } = ApiGetCallWithPagination({
     url: "/api/ExecCustomRole",
     queryKey: "customRoleList",
   });
@@ -141,7 +143,9 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
       const isApiRole = selectedRole === "api-role";
       setCippApiRoleSelected(isApiRole);
 
-      const currentPermissions = customRoleList.find((role) => role.RowKey === selectedRole);
+      const currentPermissions = customRoleList?.pages?.[0]?.find(
+        (role) => role.RowKey === selectedRole
+      );
 
       var newAllowedTenants = [];
       currentPermissions?.AllowedTenants.map((tenant) => {

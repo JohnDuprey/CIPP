@@ -56,8 +56,8 @@ const CippRoles = () => {
         }
         api={{
           url: "/api/ListCustomRole",
-          queryKey: "customRoleList",
         }}
+        queryKey="customRoleTable"
         simpleColumns={["RoleName", "Type", "EntraGroup"]}
       />
     </Box>
