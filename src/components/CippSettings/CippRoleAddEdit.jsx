@@ -20,7 +20,7 @@ import { CippFormTenantSelector } from "/src/components/CippComponents/CippFormT
 import { Save } from "@mui/icons-material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CippFormComponent from "../CippComponents/CippFormComponent";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm, useFormState, useWatch } from "react-hook-form";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import cippRoles from "../../data/cipp-roles.json";
@@ -41,6 +41,8 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
   const formControl = useForm({
     mode: "onChange",
   });
+
+  const formState = useFormState({ control: formControl.control });
 
   const validateRoleName = (value) => {
     if (customRoleList.some((role) => role.RowKey.toLowerCase() === value.toLowerCase())) {
@@ -254,7 +256,6 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
       }
     });
 
-    console.log(selectedPermissions);
     updatePermissions.mutate({
       url: "/api/ExecCustomRole?Action=AddUpdate",
       data: {
@@ -548,7 +549,7 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
           className="me-2"
           type="submit"
           variant="contained"
-          disabled={updatePermissions.isPending || customRoleListFetching}
+          disabled={updatePermissions.isPending || customRoleListFetching || !formState.isValid}
           startIcon={
             <SvgIcon fontSize="small">
               <Save />
