@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Box,
@@ -21,12 +21,11 @@ import { Save } from "@mui/icons-material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import { useForm, useWatch } from "react-hook-form";
-import { InformationCircleIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { CippApiDialog } from "../CippComponents/CippApiDialog";
-import { useDialog } from "../../hooks/use-dialog";
+import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { CippApiResults } from "../CippComponents/CippApiResults";
+import cippRoles from "../../data/cipp-roles.json";
 
-export const CippCustomRoles = () => {
+export const CippCustomRoles = ({ selectedRole }) => {
   const updatePermissions = ApiPostCall({
     urlFromData: true,
     relatedQueryKeys: ["customRoleList"],
@@ -34,19 +33,27 @@ export const CippCustomRoles = () => {
 
   const [allTenantSelected, setAllTenantSelected] = useState(false);
   const [cippApiRoleSelected, setCippApiRoleSelected] = useState(false);
-  const [selectedRole, setSelectedRole] = useState(null);
+  const [selectedRoleState, setSelectedRoleState] = useState(null);
   const [updateDefaults, setUpdateDefaults] = useState(false);
+  const [baseRolePermissions, setBaseRolePermissions] = useState({});
+  const [isBaseRole, setIsBaseRole] = useState(false);
 
   const formControl = useForm({
-    mode: "onBlur",
+    mode: "onChange",
   });
 
-  const createDialog = useDialog();
-  const currentRole = useWatch({ control: formControl.control, name: "RoleName" });
+  const validateRoleName = (value) => {
+    if (customRoleList.some((role) => role.RowKey.toLowerCase() === value.toLowerCase())) {
+      return `Role '${value}' already exists`;
+    }
+    return true;
+  };
+
   const selectedTenant = useWatch({ control: formControl.control, name: "allowedTenants" });
   const blockedTenants = useWatch({ control: formControl.control, name: "blockedTenants" });
   const setDefaults = useWatch({ control: formControl.control, name: "Defaults" });
   const selectedPermissions = useWatch({ control: formControl.control, name: "Permissions" });
+  const selectedEntraGroup = useWatch({ control: formControl.control, name: "EntraGroup" });
 
   const {
     data: apiPermissions = [],
@@ -61,7 +68,6 @@ export const CippCustomRoles = () => {
     data: customRoleList = [],
     isFetching: customRoleListFetching,
     isSuccess: customRoleListSuccess,
-    refetch: refetchCustomRoleList,
   } = ApiGetCall({
     url: "/api/ExecCustomRole",
     queryKey: "customRoleList",
@@ -73,16 +79,63 @@ export const CippCustomRoles = () => {
   });
   const tenants = pages[0] || [];
 
-  useEffect(() => {
-    if (customRoleListSuccess && tenantsSuccess && selectedRole !== currentRole?.value) {
-      setSelectedRole(currentRole?.value);
-      if (currentRole?.value === "cipp-api") {
-        setCippApiRoleSelected(true);
-      } else {
-        setCippApiRoleSelected(false);
-      }
+  const matchPattern = (pattern, value) => {
+    const regex = new RegExp(`^${pattern.replace("*", ".*")}$`);
+    return regex.test(value);
+  };
 
-      var currentPermissions = customRoleList.find((role) => role.RowKey === currentRole?.value);
+  const getBaseRolePermissions = (role) => {
+    const roleConfig = cippRoles[role];
+    if (!roleConfig) return {};
+
+    const permissions = {};
+    Object.keys(apiPermissions).forEach((cat) => {
+      Object.keys(apiPermissions[cat]).forEach((obj) => {
+        const includeRead = roleConfig.include.some((pattern) =>
+          matchPattern(pattern, `${cat}.${obj}.Read`)
+        );
+        const includeReadWrite = roleConfig.include.some((pattern) =>
+          matchPattern(pattern, `${cat}.${obj}.ReadWrite`)
+        );
+        const excludeRead = roleConfig.exclude.some((pattern) =>
+          matchPattern(pattern, `${cat}.${obj}.Read`)
+        );
+        const excludeReadWrite = roleConfig.exclude.some((pattern) =>
+          matchPattern(pattern, `${cat}.${obj}.ReadWrite`)
+        );
+
+        if ((includeRead || includeReadWrite) && !(excludeRead || excludeReadWrite)) {
+          if (!permissions[cat]) permissions[cat] = {};
+          permissions[cat][obj] = includeReadWrite ? `ReadWrite` : `Read`;
+        }
+      });
+    });
+    return permissions;
+  };
+
+  useEffect(() => {
+    if (selectedRole && cippRoles[selectedRole]) {
+      setBaseRolePermissions(getBaseRolePermissions(selectedRole));
+      setIsBaseRole(true);
+    } else {
+      setBaseRolePermissions({});
+      setIsBaseRole(false);
+    }
+  }, [selectedRole, apiPermissions]);
+
+  useEffect(() => {
+    if (
+      (customRoleListSuccess &&
+        tenantsSuccess &&
+        selectedRole &&
+        selectedRoleState !== selectedRole) ||
+      baseRolePermissions
+    ) {
+      setSelectedRoleState(selectedRole);
+      const isApiRole = selectedRole === "api-role";
+      setCippApiRoleSelected(isApiRole);
+
+      const currentPermissions = customRoleList.find((role) => role.RowKey === selectedRole);
 
       var newAllowedTenants = [];
       currentPermissions?.AllowedTenants.map((tenant) => {
@@ -108,14 +161,24 @@ export const CippCustomRoles = () => {
         }
       });
 
+      const basePermissions = {};
+      Object.entries(getBaseRolePermissions(selectedRole)).forEach(([cat, objects]) => {
+        Object.entries(objects).forEach(([obj, permission]) => {
+          basePermissions[`${cat}${obj}`] = `${cat}.${obj}.${permission}`;
+        });
+      });
       formControl.reset({
-        Permissions: currentPermissions?.Permissions,
-        RoleName: currentRole,
+        Permissions:
+          basePermissions && Object.keys(basePermissions).length > 0
+            ? basePermissions
+            : currentPermissions?.Permissions,
+        RoleName: selectedRole ?? currentPermissions?.RowKey,
         allowedTenants: newAllowedTenants,
         blockedTenants: newBlockedTenants,
+        EntraGroup: currentPermissions?.EntraGroup,
       });
     }
-  }, [currentRole, customRoleList, customRoleListSuccess, tenantsSuccess]);
+  }, [customRoleList, customRoleListSuccess, tenantsSuccess, baseRolePermissions]);
 
   useEffect(() => {
     if (updateDefaults !== setDefaults) {
@@ -150,8 +213,16 @@ export const CippCustomRoles = () => {
     }
   }, [selectedTenant, blockedTenants]);
 
+  useEffect(() => {
+    if (selectedRole) {
+      formControl.setValue("RoleName", selectedRole);
+    }
+  }, [selectedRole]);
+
   const handleSubmit = () => {
+    let values = formControl.getValues();
     var allowedTenantIds = [];
+
     selectedTenant.map((tenant) => {
       var tenant = tenants.find((t) => t.defaultDomainName === tenant?.value);
       if (tenant?.customerId) {
@@ -167,18 +238,20 @@ export const CippCustomRoles = () => {
       }
     });
 
+    console.log(selectedPermissions);
     updatePermissions.mutate({
       url: "/api/ExecCustomRole?Action=AddUpdate",
       data: {
-        RoleName: currentRole.value,
+        RoleName: values?.["RoleName"],
         Permissions: selectedPermissions,
+        EntraGroup: selectedEntraGroup,
         AllowedTenants: allowedTenantIds,
         BlockedTenants: blockedTenantIds,
       },
     });
   };
 
-  const ApiPermissionRow = ({ obj, cat }) => {
+  const ApiPermissionRow = ({ obj, cat, readOnly }) => {
     const [offcanvasVisible, setOffcanvasVisible] = useState(false);
 
     var items = [];
@@ -197,7 +270,6 @@ export const CippCustomRoles = () => {
         width={"100%"}
       >
         <Typography variant="h6">{obj}</Typography>
-
         <Stack direction="row" spacing={3} xl={8}>
           <Button onClick={() => setOffcanvasVisible(true)} size="sm" color="info">
             <SvgIcon fontSize="small">
@@ -212,14 +284,14 @@ export const CippCustomRoles = () => {
               {
                 label: "None",
                 value: `${cat}.${obj}.None`,
-                disabled: cat === "CIPP" && obj === "Core",
               },
-              { label: "Read", value: `${cat}.${obj}.Read` },
+              { label: "Read", value: `${cat}.${obj}.Read`, disabled: readOnly },
               {
                 label: "Read / Write",
                 value: `${cat}.${obj}.ReadWrite`,
               },
             ]}
+            disabled={readOnly || (cat === "CIPP" && obj === "Core")}
             formControl={formControl}
           />
         </Stack>
@@ -269,21 +341,18 @@ export const CippCustomRoles = () => {
       <Stack spacing={3} direction="row">
         <Box width={"80%"}>
           <Stack spacing={1} sx={{ mb: 3 }}>
-            <CippFormComponent
-              type="autoComplete"
-              name="RoleName"
-              label="Custom Role"
-              options={customRoleList.map((role) => ({
-                label: role.RowKey,
-                value: role.RowKey,
-              }))}
-              isFetching={customRoleListFetching}
-              refreshFunction={() => refetchCustomRoleList()}
-              creatable={true}
-              formControl={formControl}
-              multiple={false}
-              fullWidth={true}
-            />
+            {!selectedRole && (
+              <CippFormComponent
+                type="textField"
+                name="RoleName"
+                label="Custom Role"
+                placeholder="Enter a unique role name"
+                formControl={formControl}
+                validators={{ validate: validateRoleName }}
+                fullWidth={true}
+                required={true}
+              />
+            )}
             {cippApiRoleSelected && (
               <Alert color="info">
                 This is the default role for all API clients in the CIPP-API integration. If you
@@ -291,108 +360,138 @@ export const CippCustomRoles = () => {
                 application and select it from the CIPP-API integrations page.
               </Alert>
             )}
-          </Stack>
-          <Stack spacing={1} sx={{ my: 3 }}>
-            <CippFormTenantSelector
-              label="Allowed Tenants"
+            <CippFormComponent
+              type="autoComplete"
+              name="EntraGroup"
+              label="Entra Group Assignment"
+              placeholder="Select an Entra Group to assign this role to, leave blank for none."
+              api={{
+                url: "/api/ExecCustomRole",
+                data: { Action: "ListEntraGroups" },
+                type: "GET",
+                queryKey: "PartnerEntraGroups",
+                dataKey: "Results",
+                labelField: "displayName",
+                valueField: "id",
+              }}
               formControl={formControl}
-              type="multiple"
-              allTenants={true}
-              name="allowedTenants"
               fullWidth={true}
+              sortOptions={true}
+              multiple={false}
+              creatable={false}
             />
-            {allTenantSelected && blockedTenants?.length == 0 && (
-              <Alert color="warning">
-                All tenants selected, no tenant restrictions will be applied unless blocked tenants
-                are specified.
-              </Alert>
-            )}
           </Stack>
-          {allTenantSelected && (
-            <Box sx={{ mb: 3 }}>
-              <CippFormTenantSelector
-                label="Blocked Tenants"
-                formControl={formControl}
-                type="multiple"
-                allTenants={false}
-                name="blockedTenants"
-                fullWidth={true}
-              />
-            </Box>
-          )}
-
-          {currentRole && (
+          {!isBaseRole && (
             <>
-              {apiPermissionFetching && <Skeleton height={500} />}
-              {apiPermissionSuccess && (
-                <>
-                  <Typography variant="h5">API Permissions</Typography>
-                  <Stack
-                    direction="row"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent={"space-between"}
-                    width={"100%"}
-                    sx={{ my: 2 }}
-                  >
-                    <Typography variant="body2">Set All Permissions</Typography>
-
-                    <Box sx={{ pr: 5 }}>
-                      <CippFormComponent
-                        type="radio"
-                        name="Defaults"
-                        options={[
-                          {
-                            label: "None",
-                            value: "None",
-                          },
-                          { label: "Read", value: "Read" },
-                          {
-                            label: "Read / Write",
-                            value: "ReadWrite",
-                          },
-                        ]}
-                        formControl={formControl}
-                        row={true}
-                      />
-                    </Box>
-                  </Stack>
-                  <Box>
-                    <>
-                      {Object.keys(apiPermissions)
-                        .sort()
-                        .map((cat, catIndex) => (
-                          <Accordion variant="outlined" key={`accordion-item-${catIndex}`}>
-                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                              {cat}
-                            </AccordionSummary>
-                            <AccordionDetails>
-                              {Object.keys(apiPermissions[cat])
-                                .sort()
-                                .map((obj, index) => {
-                                  return (
-                                    <Grid
-                                      container
-                                      key={`row-${catIndex}-${index}`}
-                                      className="mb-3"
-                                    >
-                                      <ApiPermissionRow obj={obj} cat={cat} />
-                                    </Grid>
-                                  );
-                                })}
-                            </AccordionDetails>
-                          </Accordion>
-                        ))}
-                    </>
-                  </Box>
-                </>
+              <Stack spacing={1} sx={{ my: 3 }}>
+                <CippFormTenantSelector
+                  label="Allowed Tenants"
+                  formControl={formControl}
+                  type="multiple"
+                  allTenants={true}
+                  name="allowedTenants"
+                  fullWidth={true}
+                />
+                {allTenantSelected && blockedTenants?.length == 0 && (
+                  <Alert color="warning">
+                    All tenants selected, no tenant restrictions will be applied unless blocked
+                    tenants are specified.
+                  </Alert>
+                )}
+              </Stack>
+              {allTenantSelected && (
+                <Box sx={{ mb: 3 }}>
+                  <CippFormTenantSelector
+                    label="Blocked Tenants"
+                    formControl={formControl}
+                    type="multiple"
+                    allTenants={false}
+                    name="blockedTenants"
+                    fullWidth={true}
+                  />
+                </Box>
               )}
+            </>
+          )}
+          {apiPermissionFetching && <Skeleton variant="rectangle" height={500} />}
+          {apiPermissionSuccess && (
+            <>
+              <Typography variant="h5">API Permissions</Typography>
+              {!isBaseRole && (
+                <Stack
+                  direction="row"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent={"space-between"}
+                  width={"100%"}
+                  sx={{ my: 2 }}
+                >
+                  <Typography variant="body2">Set All Permissions</Typography>
+
+                  <Box sx={{ pr: 5 }}>
+                    <CippFormComponent
+                      type="radio"
+                      name="Defaults"
+                      options={[
+                        {
+                          label: "None",
+                          value: "None",
+                        },
+                        { label: "Read", value: "Read" },
+                        {
+                          label: "Read / Write",
+                          value: "ReadWrite",
+                        },
+                      ]}
+                      formControl={formControl}
+                      row={true}
+                    />
+                  </Box>
+                </Stack>
+              )}
+              <Box>
+                <>
+                  {Object.keys(apiPermissions)
+                    .sort()
+                    .map((cat, catIndex) => (
+                      <Accordion variant="outlined" key={`accordion-item-${catIndex}`}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>{cat}</AccordionSummary>
+                        <AccordionDetails>
+                          {Object.keys(apiPermissions[cat])
+                            .sort()
+                            .map((obj, index) => {
+                              const readOnly = baseRolePermissions?.[cat] ? true : false;
+                              return (
+                                <Grid container key={`row-${catIndex}-${index}`} className="mb-3">
+                                  <ApiPermissionRow obj={obj} cat={cat} readOnly={readOnly} />
+                                </Grid>
+                              );
+                            })}
+                        </AccordionDetails>
+                      </Accordion>
+                    ))}
+                </>
+              </Box>
             </>
           )}
         </Box>
 
         <Box xl={3} md={12} width="30%">
-          {selectedRole && selectedTenant?.length > 0 && (
+          {selectedRole && (
+            <Alert color="info">
+              Editing an existing role will update the permissions for all users assigned to this
+              role.
+            </Alert>
+          )}
+
+          {selectedEntraGroup && (
+            <Alert color="info">
+              This role will be assigned to the Entra Group:{" "}
+              <strong>{selectedEntraGroup.label}</strong>
+            </Alert>
+          )}
+          {console.log(selectedTenant)}
+          {selectedTenant?.length > 0 && (
             <>
               <h5>Allowed Tenants</h5>
               <ul>
@@ -402,7 +501,7 @@ export const CippCustomRoles = () => {
               </ul>
             </>
           )}
-          {selectedRole && blockedTenants?.length > 0 && (
+          {blockedTenants?.length > 0 && (
             <>
               <h5>Blocked Tenants</h5>
               <ul>
@@ -412,7 +511,7 @@ export const CippCustomRoles = () => {
               </ul>
             </>
           )}
-          {selectedRole && selectedPermissions && (
+          {selectedPermissions && apiPermissionSuccess && (
             <>
               <h5>Selected Permissions</h5>
               <ul>
@@ -422,7 +521,8 @@ export const CippCustomRoles = () => {
                     .map((cat, idx) => (
                       <>
                         {selectedPermissions?.[cat] &&
-                          !selectedPermissions?.[cat]?.includes("None") && (
+                          typeof selectedPermissions[cat] === "string" &&
+                          !selectedPermissions[cat]?.includes("None") && (
                             <li key={idx}>{selectedPermissions[cat]}</li>
                           )}
                       </>
@@ -433,45 +533,13 @@ export const CippCustomRoles = () => {
         </Box>
       </Stack>
 
-      <CippApiDialog
-        createDialog={createDialog}
-        title="Delete Custom Role"
-        api={{
-          confirmText:
-            "Are you sure you want to delete this custom role? Any users with this role will have their permissions reset to the default for their base role.",
-          url: "/api/ExecCustomRole?Action=Delete",
-          type: "POST",
-          data: {
-            RoleName: `!${currentRole?.value}`,
-          },
-          relatedQueryKeys: ["customRoleList"],
-        }}
-        row={{}}
-        formControl={formControl}
-        relatedQueryKeys={"customRoleList"}
-      />
       <CippApiResults apiObject={updatePermissions} />
       <Stack direction="row" spacing={2} justifyContent="flex-end">
-        {currentRole && (
-          <Button
-            className="me-2"
-            type="button"
-            variant="outlined"
-            onClick={createDialog.handleOpen}
-            startIcon={
-              <SvgIcon fontSize="small">
-                <TrashIcon />
-              </SvgIcon>
-            }
-          >
-            Delete
-          </Button>
-        )}
         <Button
           className="me-2"
           type="submit"
           variant="contained"
-          disabled={updatePermissions.isPending || customRoleListFetching || !currentRole}
+          disabled={updatePermissions.isPending || customRoleListFetching}
           startIcon={
             <SvgIcon fontSize="small">
               <Save />

@@ -208,7 +208,7 @@ export const CippFormComponent = (props) => {
     case "radio":
       return (
         <>
-          <FormControl>
+          <FormControl disabled={other.disabled}>
             <FormLabel>{label}</FormLabel>
             <Controller
               name={convertedName}
@@ -220,7 +220,7 @@ export const CippFormComponent = (props) => {
                     <FormControlLabel
                       key={`${option.value}-${idx}`}
                       value={option.value}
-                      control={<Radio />}
+                      control={<Radio disabled={other.disabled} />}
                       label={option.label}
                     />
                   ))}

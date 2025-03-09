@@ -17,7 +17,7 @@ const Page = () => {
   const formcontrol = useForm({ mode: "onChange", defaultValues: settings });
 
   const auth = ApiGetCall({
-    url: "/.auth/me",
+    url: "/api/me",
     queryKey: "authmecipp",
     staleTime: 120000,
     refetchOnWindowFocus: true,

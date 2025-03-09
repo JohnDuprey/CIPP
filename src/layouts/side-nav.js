@@ -107,7 +107,7 @@ export const SideNav = (props) => {
   const pathname = usePathname();
   const [hovered, setHovered] = useState(false);
   const collapse = !(pinned || hovered);
-  const { data: profile } = ApiGetCall({ url: "/.auth/me", queryKey: "authmecipp" });
+  const { data: profile } = ApiGetCall({ url: "/api/me", queryKey: "authmecipp" });
 
   // Preprocess items to mark which should be open
   const processedItems = markOpenItems(items, pathname);

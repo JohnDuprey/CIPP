@@ -7,7 +7,7 @@ export const PrivateRoute = ({ children, routeType }) => {
     error,
     isLoading,
   } = ApiGetCall({
-    url: "/.auth/me",
+    url: "/api/me",
     queryKey: "authmecipp",
     refetchOnWindowFocus: true,
     staleTime: 120000, // 2 minutes
@@ -19,7 +19,7 @@ export const PrivateRoute = ({ children, routeType }) => {
 
   let roles = null;
   if (null !== profile?.clientPrincipal) {
-    roles = profile?.clientPrincipal.userRoles;
+    roles = profile?.clientPrincipal?.userRoles;
   } else if (null === profile?.clientPrincipal) {
     return <UnauthenticatedPage />;
   }
