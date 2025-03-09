@@ -504,7 +504,6 @@ export const CippRoleAddEdit = ({ selectedRole }) => {
               <strong>{selectedEntraGroup.label}</strong>
             </Alert>
           )}
-          {console.log(selectedTenant)}
           {selectedTenant?.length > 0 && (
             <>
               <h5>Allowed Tenants</h5>
