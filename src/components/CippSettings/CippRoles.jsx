@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Box, Button, SvgIcon, Typography } from "@mui/material";
-import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
-import cippRoles from "../../data/cipp-roles.json";
+import React from "react";
+import { Box, Button, SvgIcon } from "@mui/material";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import NextLink from "next/link";
@@ -58,7 +56,7 @@ const CippRoles = () => {
         }
         api={{
           url: "/api/ListCustomRole",
-          queryKey: "rolesData",
+          queryKey: "customRoleList",
         }}
         simpleColumns={["RoleName", "Type", "EntraGroup"]}
       />

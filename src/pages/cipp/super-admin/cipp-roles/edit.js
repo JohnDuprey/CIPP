@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippPageCard from "/src/components/CippCards/CippPageCard";
-import { CippCustomRoles } from "/src/components/CippSettings/CippCustomRoles";
-import { CardContent, Stack, Typography } from "@mui/material";
+import { CippRoleAddEdit } from "/src/components/CippSettings/CippRoleAddEdit";
+import { CardContent, Stack, Alert } from "@mui/material";
 
 const EditRolePage = () => {
   const router = useRouter();
@@ -12,10 +12,11 @@ const EditRolePage = () => {
     <CippPageCard hideBackButton={false} title={`Edit Role: ${role}`}>
       <CardContent>
         <Stack spacing={2}>
-          <Typography variant="body2">
-            Edit the permissions and settings for the custom role.
-          </Typography>
-          <CippCustomRoles selectedRole={role} />
+          <Alert color="info">
+            Editing an existing role will update the permissions for all users assigned to this
+            role.
+          </Alert>
+          <CippRoleAddEdit selectedRole={role} />
         </Stack>
       </CardContent>
     </CippPageCard>

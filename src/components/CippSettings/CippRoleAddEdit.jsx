@@ -25,7 +25,7 @@ import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { CippApiResults } from "../CippComponents/CippApiResults";
 import cippRoles from "../../data/cipp-roles.json";
 
-export const CippCustomRoles = ({ selectedRole }) => {
+export const CippRoleAddEdit = ({ selectedRole }) => {
   const updatePermissions = ApiPostCall({
     urlFromData: true,
     relatedQueryKeys: ["customRoleList"],
@@ -108,6 +108,10 @@ export const CippCustomRoles = ({ selectedRole }) => {
           if (!permissions[cat]) permissions[cat] = {};
           permissions[cat][obj] = includeReadWrite ? `ReadWrite` : `Read`;
         }
+        if (!permissions[cat] || !permissions[cat][obj]) {
+          if (!permissions[cat]) permissions[cat] = {};
+          permissions[cat][obj] = `None`;
+        }
       });
     });
     return permissions;
@@ -167,11 +171,23 @@ export const CippCustomRoles = ({ selectedRole }) => {
           basePermissions[`${cat}${obj}`] = `${cat}.${obj}.${permission}`;
         });
       });
+      const processPermissions = (permissions) => {
+        const processed = {};
+        Object.keys(apiPermissions).forEach((cat) => {
+          Object.keys(apiPermissions[cat]).forEach((obj) => {
+            const key = `${cat}${obj}`;
+            const existingPerm = permissions?.[key];
+            processed[key] = existingPerm || `${cat}.${obj}.None`;
+          });
+        });
+        return processed;
+      };
+
       formControl.reset({
         Permissions:
           basePermissions && Object.keys(basePermissions).length > 0
             ? basePermissions
-            : currentPermissions?.Permissions,
+            : processPermissions(currentPermissions?.Permissions),
         RoleName: selectedRole ?? currentPermissions?.RowKey,
         allowedTenants: newAllowedTenants,
         blockedTenants: newBlockedTenants,
@@ -477,13 +493,6 @@ export const CippCustomRoles = ({ selectedRole }) => {
         </Box>
 
         <Box xl={3} md={12} width="30%">
-          {selectedRole && (
-            <Alert color="info">
-              Editing an existing role will update the permissions for all users assigned to this
-              role.
-            </Alert>
-          )}
-
           {selectedEntraGroup && (
             <Alert color="info">
               This role will be assigned to the Entra Group:{" "}
@@ -554,4 +563,4 @@ export const CippCustomRoles = ({ selectedRole }) => {
   );
 };
 
-export default CippCustomRoles;
+export default CippRoleAddEdit;

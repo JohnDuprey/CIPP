@@ -1,17 +1,17 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import CippPageCard from "/src/components/CippCards/CippPageCard";
-import { CippCustomRoles } from "/src/components/CippSettings/CippCustomRoles";
-import { CardContent, Stack, Typography } from "@mui/material";
+import { CippRoleAddEdit } from "/src/components/CippSettings/CippRoleAddEdit";
+import { CardContent, Stack, Alert } from "@mui/material";
 
 const AddRolePage = () => {
   return (
     <CippPageCard hideBackButton={false} title="Add New Role">
       <CardContent>
         <Stack spacing={2}>
-          <Typography variant="body2">
+          <Alert color="info">
             Create a new custom role with specific permissions and settings.
-          </Typography>
-          <CippCustomRoles />
+          </Alert>
+          <CippRoleAddEdit />
         </Stack>
       </CardContent>
     </CippPageCard>
