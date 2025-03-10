@@ -5,6 +5,7 @@ export const PrivateRoute = ({ children, routeType }) => {
   const {
     data: profile,
     error,
+    isError,
     isLoading,
   } = ApiGetCall({
     url: "/api/me",
@@ -21,7 +22,11 @@ export const PrivateRoute = ({ children, routeType }) => {
 
   if (null !== profile?.clientPrincipal && undefined !== profile) {
     roles = profile?.clientPrincipal?.userRoles;
-  } else if (null === profile?.clientPrincipal || undefined === profile) {
+  } else if (
+    null === profile?.clientPrincipal ||
+    undefined === profile ||
+    (isError && error?.response?.status === 302)
+  ) {
     return <UnauthenticatedPage />;
   }
   if (null === roles) {
