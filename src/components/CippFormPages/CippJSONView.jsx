@@ -127,9 +127,10 @@ function CippJsonView({
                 let value;
                 if (child.choiceSettingValue && child.choiceSettingValue.value) {
                   value =
-                    childIntuneObj?.options?.find(
+                    Array.isArray(childIntuneObj?.options) ?
+                    childIntuneObj.options.find(
                       (option) => option.id === child.choiceSettingValue.value
-                    )?.displayName || child.choiceSettingValue.value;
+                    )?.displayName : childIntuneObj.options.id === child.choiceSettingValue.value ? childIntuneObj.options.displayName : child.choiceSettingValue.value;
                 }
                 items.push(
                   <PropertyListItem
