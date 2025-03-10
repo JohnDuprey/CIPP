@@ -190,7 +190,7 @@ export const CippAutoComplete = (props) => {
   return (
     <Autocomplete
       key={`${defaultValue}-${rand}`}
-      disabled={disabled || actionGetRequest.isFetching || isFetching}
+      disabled={disabled || (actionGetRequest.isFetching && !actionGetRequest.isFetchingNextPage) || isFetching}
       popupIcon={
         actionGetRequest.isFetching || isFetching ? (
           <CircularProgress color="inherit" size={20} />
