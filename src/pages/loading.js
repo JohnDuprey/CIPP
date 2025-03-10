@@ -14,12 +14,15 @@ const Page = () => {
     refetchOnWindowFocus: true,
   });
 
+  const [loadingImage, setLoadingImage] = useState("/assets/illustrations/undraw_analysis_dq08.svg");
+
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!orgData.isSuccess) {
         setLoadingText(
           "The function app may be experiencing a cold start currently, this may take a little longer than usual..."
         );
+        setLoadingImage("/assets/illustrations/undraw-into-the-night-nd84.svg");
       }
     }, 45000); // 45 seconds
 
@@ -51,7 +54,7 @@ const Page = () => {
                 <Grid item xs={12} md={6}>
                   <CippImageCard
                     isFetching={false}
-                    imageUrl="/assets/illustrations/undraw_analysis_dq08.svg"
+                    imageUrl={loadingImage}
                     text={loadingText}
                     title="Logging into CIPP"
                   />
