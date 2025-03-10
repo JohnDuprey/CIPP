@@ -32,7 +32,7 @@ export function ApiGetCall(props) {
         error.response?.status === 302 &&
         error.response?.headers.get("location").includes("/.auth/login/aad")
       ) {
-        queryClient.invalidateQueries({ queryKey: ["authmecipp"] });
+        queryClient.invalidateQueries({ queryKey: ["authmeswa"] });
       }
       returnRetry = false;
     }

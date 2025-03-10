@@ -14,6 +14,13 @@ export const PrivateRoute = ({ children, routeType }) => {
     staleTime: 120000, // 2 minutes
   });
 
+  const session = ApiGetCall({
+    url: "/.auth/me",
+    queryKey: "authmeswa",
+    refetchOnWindowFocus: true,
+    staleTime: 120000, // 2 minutes
+  })
+
   if (isLoading) {
     return "Loading...";
   }
@@ -22,11 +29,7 @@ export const PrivateRoute = ({ children, routeType }) => {
 
   if (null !== profile?.clientPrincipal && undefined !== profile) {
     roles = profile?.clientPrincipal?.userRoles;
-  } else if (
-    null === profile?.clientPrincipal ||
-    undefined === profile ||
-    (isError && error?.response?.status === 302)
-  ) {
+  } else if (null === profile?.clientPrincipal || undefined === profile || session?.data?.clientPrincipal === null || session?.data?.clientPrincipal === undefined) {
     return <UnauthenticatedPage />;
   }
   if (null === roles) {
