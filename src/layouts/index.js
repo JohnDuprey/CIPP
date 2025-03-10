@@ -86,6 +86,13 @@ export const Layout = (props) => {
     staleTime: 120000,
     refetchOnWindowFocus: true,
   });
+
+  const swaStatus = ApiGetCall({
+    url: "/.auth/me",
+    queryKey: "authmeswa",
+    staleTime: 120000,
+    refetchOnWindowFocus: true,
+  });
   const [hideSidebar, setHideSidebar] = useState(false);
 
   useEffect(() => {
@@ -117,8 +124,15 @@ export const Layout = (props) => {
 
       const filteredMenu = filterItemsByRole(nativeMenuItems);
       setMenuItems(filteredMenu);
+    } else if (
+      swaStatus.isLoading ||
+      swaStatus.data?.clientPrincipal === null ||
+      swaStatus.data === undefined ||
+      currentRole.isLoading
+    ) {
+      setHideSidebar(true);
     }
-  }, [currentRole.isSuccess]);
+  }, [currentRole.isSuccess, swaStatus.data, swaStatus.isLoading]);
 
   const handleNavPin = useCallback(() => {
     settings.handleUpdate({

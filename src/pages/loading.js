@@ -1,0 +1,68 @@
+import { Box, Container, Grid, Stack } from "@mui/material";
+import Head from "next/head";
+import { CippImageCard } from "../components/CippCards/CippImageCard";
+import { Layout as DashboardLayout } from "../layouts/index.js";
+import { ApiGetCall } from "../api/ApiCall";
+import { useState, useEffect } from "react";
+
+const Page = () => {
+  const [loadingText, setLoadingText] = useState("Please wait while we get your account ready...");
+  const orgData = ApiGetCall({
+    url: "/api/me",
+    queryKey: "authmecipp",
+    staleTime: 120000,
+    refetchOnWindowFocus: true,
+  });
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!orgData.isSuccess) {
+        setLoadingText(
+          "The function app may be experiencing a cold start currently, this may take a little longer than usual..."
+        );
+      }
+    }, 45000); // 45 seconds
+
+    return () => clearTimeout(timer);
+  }, [orgData.isSuccess]);
+
+  return (
+    <>
+      <DashboardLayout>
+        <Head>
+          <title>Loading</title>
+        </Head>
+        <Box
+          sx={{
+            flexGrow: 1,
+            py: 4,
+            height: "100vh", // Full height of the viewport
+          }}
+        >
+          <Container maxWidth={false}>
+            <Stack spacing={6} sx={{ height: "100%" }}>
+              <Grid
+                container
+                spacing={3}
+                justifyContent="center" // Center horizontally
+                alignItems="center" // Center vertically
+                sx={{ height: "100%" }} // Ensure the container takes full height
+              >
+                <Grid item xs={12} md={6}>
+                  <CippImageCard
+                    isFetching={false}
+                    imageUrl="/assets/illustrations/undraw_analysis_dq08.svg"
+                    text={loadingText}
+                    title="Logging into CIPP"
+                  />
+                </Grid>
+              </Grid>
+            </Stack>
+          </Container>
+        </Box>
+      </DashboardLayout>
+    </>
+  );
+};
+
+export default Page;

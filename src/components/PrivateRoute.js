@@ -1,5 +1,6 @@
 import { ApiGetCall } from "../api/ApiCall.jsx";
 import UnauthenticatedPage from "../pages/unauthenticated.js";
+import LoadingPage from "../pages/loading.js";
 
 export const PrivateRoute = ({ children, routeType }) => {
   const {
@@ -21,15 +22,20 @@ export const PrivateRoute = ({ children, routeType }) => {
     staleTime: 120000, // 2 minutes
   })
 
+  // if not logged into swa
+  if (null === session?.data?.clientPrincipal || session?.data === undefined) {
+    return <UnauthenticatedPage />;
+  }
+
   if (isLoading) {
-    return "Loading...";
+    return <LoadingPage />;
   }
 
   let roles = null;
 
   if (null !== profile?.clientPrincipal && undefined !== profile) {
     roles = profile?.clientPrincipal?.userRoles;
-  } else if (null === profile?.clientPrincipal || undefined === profile || session?.data?.clientPrincipal === null || session?.data?.clientPrincipal === undefined) {
+  } else if (null === profile?.clientPrincipal || undefined === profile) {
     return <UnauthenticatedPage />;
   }
   if (null === roles) {
