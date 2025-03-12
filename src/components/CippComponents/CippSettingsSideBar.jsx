@@ -22,8 +22,6 @@ export const CippSettingsSideBar = (props) => {
   const currentUser = ApiGetCall({
     url: "/api/me",
     queryKey: "authmecipp",
-    staleTime: 120000,
-    refetchOnWindowFocus: true,
   });
 
   const saveSettingsPost = ApiPostCall({

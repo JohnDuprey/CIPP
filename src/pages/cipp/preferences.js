@@ -19,8 +19,6 @@ const Page = () => {
   const auth = ApiGetCall({
     url: "/api/me",
     queryKey: "authmecipp",
-    staleTime: 120000,
-    refetchOnWindowFocus: true,
   });
 
   const addedAttributes = [

@@ -10,8 +10,6 @@ const Page = () => {
   const orgData = ApiGetCall({
     url: "/api/me",
     queryKey: "authmecipp",
-    staleTime: 120000,
-    refetchOnWindowFocus: true,
   });
 
   const [loadingImage, setLoadingImage] = useState("/assets/illustrations/undraw_analysis_dq08.svg");

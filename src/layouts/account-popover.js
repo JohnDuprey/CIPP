@@ -40,8 +40,6 @@ export const AccountPopover = (props) => {
   const orgData = ApiGetCall({
     url: "/api/me",
     queryKey: "authmecipp",
-    staleTime: 120000,
-    refetchOnWindowFocus: true,
   });
 
   const handleLogout = useCallback(async () => {

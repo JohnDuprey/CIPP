@@ -83,8 +83,6 @@ export const Layout = (props) => {
   const currentRole = ApiGetCall({
     url: "/api/me",
     queryKey: "authmecipp",
-    staleTime: 120000,
-    refetchOnWindowFocus: true,
   });
 
   const swaStatus = ApiGetCall({

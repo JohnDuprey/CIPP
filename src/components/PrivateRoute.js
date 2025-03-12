@@ -12,7 +12,6 @@ export const PrivateRoute = ({ children, routeType }) => {
     url: "/api/me",
     queryKey: "authmecipp",
     refetchOnWindowFocus: true,
-    staleTime: 120000, // 2 minutes
   });
 
   const session = ApiGetCall({
