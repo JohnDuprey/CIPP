@@ -377,6 +377,43 @@
           "compareValue": true,
           "action": "disable"
         }
+      },
+      {
+        "type": "switch",
+        "name": "NinjaOne.PSAEnabled",
+        "label": "Enable PSA Integration"
+      },
+      {
+        "type": "autoComplete",
+        "name": "NinjaOne.PSATicketForm",
+        "label": "NinjaOne PSA Form",
+        "placeholder": "Select your PSA Form",
+        "multiple": false,
+        "creatable": false,
+        "api": {
+          "url": "/api/ExecExtensionMapping?List=NinjaOnePSAForms",
+          "queryKey": "NinjaPSAForms",
+          "dataKey": "Forms",
+          "labelField": "name",
+          "valueField": "value",
+          "showRefresh": true
+        },
+        "condition": {
+          "field": "NinjaOne.PSAEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
+      },
+      {
+        "type": "switch",
+        "name": "NinjaOne.ConsolidateTickets",
+        "label": "Consolidate Tickets",
+        "placeholder": "Consolidate tickets for the same alert into one ticket.",
+        "condition": {
+          "field": "NinjaOne.PSAEnabled",
+          "compareType": "is",
+          "compareValue": true
+        }
       }
     ],
     "mappingRequired": true,
