@@ -15,7 +15,6 @@ const markOpenItems = (items, pathname) => {
   return items.map((item) => {
     const checkPath = !!(item.path && pathname);
     const exactMatch = checkPath ? pathname === item.path : false;
-    // Use startsWith for partial matches so that subpages not in the menu still keep parent open
     const partialMatch = checkPath ? pathname.startsWith(item.path) : false;
 
     let openImmediately = exactMatch;
@@ -24,11 +23,9 @@ const markOpenItems = (items, pathname) => {
     if (newItems.length > 0) {
       newItems = markOpenItems(newItems, pathname);
       const childOpen = newItems.some((child) => child.openImmediately);
-      // Parent should open if exactMatch, childOpen, or partialMatch
-      openImmediately = openImmediately || childOpen || partialMatch;
+      openImmediately = openImmediately || childOpen || exactMatch; // Ensure parent opens if child is open
     } else {
-      // For leaf items, consider them open if exact or partial match
-      openImmediately = openImmediately || partialMatch;
+      openImmediately = openImmediately || partialMatch; // Leaf items open on partial match
     }
 
     return {
@@ -47,8 +44,6 @@ const reduceChildRoutes = ({ acc, collapse, depth, item, pathname }) => {
   const exactMatch = checkPath && pathname === item.path;
   const partialMatch = checkPath && pathname.startsWith(item.path);
 
-  // Consider item active if exactMatch or partialMatch for leaf items
-  // For parent items, being active is determined by their children or openImmediately
   const hasChildren = item.items && item.items.length > 0;
   const isActive = exactMatch || (partialMatch && !hasChildren);
 
@@ -107,7 +102,7 @@ export const SideNav = (props) => {
   const pathname = usePathname();
   const [hovered, setHovered] = useState(false);
   const collapse = !(pinned || hovered);
-  const { data: profile } = ApiGetCall({ url: "/api/me", queryKey: "authmecipp" });
+  const { data: profile } = ApiGetCall({ url: "/.auth/me", queryKey: "authmecipp" });
 
   // Preprocess items to mark which should be open
   const processedItems = markOpenItems(items, pathname);
@@ -215,8 +210,11 @@ export const SideNav = (props) => {
                   items: processedItems,
                   pathname,
                 })}
-              </Box>
-
+              </Box> {/* Add this closing tag */}
+            </Box> {/* Closing tag for the parent Box */}
+          </Scrollbar>
+          {profile?.clientPrincipal && (
+            <>
               <Divider />
               <Typography
                 color="text.secondary"
@@ -239,8 +237,8 @@ export const SideNav = (props) => {
                   width={"100px"}
                 />
               </Box>
-            </Box>
-          </Scrollbar>
+            </>
+          )}
         </Drawer>
       )}
     </>

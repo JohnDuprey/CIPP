@@ -82,8 +82,8 @@ const CippStandardsSideBar = ({
         watchForm.standards &&
         Object.keys(selectedStandards).length > 0 &&
         Object.keys(selectedStandards).every((standardName) => {
-          const standardValues = _.get(watchForm, `${standardName}`, {});
-          return standardValues.action;
+          const standardValues = _.get(watchForm, `${standardName}`, {}) ?? {};
+          return standardValues?.action;
         }),
     };
 
@@ -100,7 +100,7 @@ const CippStandardsSideBar = ({
       Object.keys(selectedStandards).length > 0 &&
       Object.keys(selectedStandards).every((standardName) => {
         const standardValues = _.get(watchForm, `${standardName}`, {});
-        return standardValues.action;
+        return standardValues?.action;
       }),
   };
   return (
@@ -132,6 +132,7 @@ const CippStandardsSideBar = ({
             label="Included Tenants"
             formControl={formControl}
             required={true}
+            includeGroups={true}
           />
           {watchForm.tenantFilter?.some((tenant) => tenant.value === "AllTenants") && (
             <>

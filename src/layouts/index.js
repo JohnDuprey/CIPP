@@ -15,6 +15,7 @@ import { CippImageCard } from "../components/CippCards/CippImageCard";
 import Page from "../pages/onboarding";
 import { useDialog } from "../hooks/use-dialog";
 import { nativeMenuItems } from "/src/layouts/config";
+import { keepPreviousData } from "@tanstack/react-query";
 
 const SIDE_NAV_WIDTH = 270;
 const SIDE_NAV_PINNED_WIDTH = 50;
@@ -83,7 +84,10 @@ export const Layout = (props) => {
   const currentRole = ApiGetCall({
     url: "/api/me",
     queryKey: "authmecipp",
+    staleTime: 120000,
+    refetchOnWindowFocus: true,
   });
+  const [hideSidebar, setHideSidebar] = useState(false);
 
   const swaStatus = ApiGetCall({
     url: "/.auth/me",
@@ -91,12 +95,11 @@ export const Layout = (props) => {
     staleTime: 120000,
     refetchOnWindowFocus: true,
   });
-  const [hideSidebar, setHideSidebar] = useState(false);
 
   useEffect(() => {
     if (currentRole.isSuccess && !currentRole.isFetching) {
-      const userRoles = currentRole.data?.clientPrincipal?.userRoles ?? [];
-      if (userRoles?.length <= 2) {
+      const userRoles = currentRole.data?.clientPrincipal?.userRoles;
+      if (!userRoles) {
         setMenuItems([]);
         setHideSidebar(true);
         return;
@@ -143,7 +146,9 @@ export const Layout = (props) => {
   const userSettingsAPI = ApiGetCall({
     url: "/api/ListUserSettings",
     queryKey: "userSettings",
-    waiting: !hideSidebar,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    keepPreviousData: true,
   });
 
   useEffect(() => {
@@ -184,6 +189,9 @@ export const Layout = (props) => {
     url: `/api/GetCippAlerts?localversion=${version?.data?.version}`,
     queryKey: "alertsDashboard",
     waiting: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    keepPreviousData: true,
   });
 
   useEffect(() => {

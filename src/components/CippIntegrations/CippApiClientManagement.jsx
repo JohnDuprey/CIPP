@@ -82,8 +82,8 @@ const CippApiClientManagement = () => {
           api: {
             url: "/api/ListCustomRole",
             queryKey: "CustomRoleList",
-            labelField: "RoleName",
-            valueField: "RoleName",
+            labelField: "RowKey",
+            valueField: "RowKey",
             showRefresh: true,
           },
         },
@@ -316,8 +316,8 @@ const CippApiClientManagement = () => {
             api: {
               url: "/api/ListCustomRole",
               queryKey: "CustomRoleList",
-              labelField: "RoleName",
-              valueField: "RoleName",
+              labelField: "RowKey",
+              valueField: "RowKey",
               showRefresh: true,
             },
             placeholder: "Choose a role from the Custom Role list.",
@@ -384,8 +384,8 @@ const CippApiClientManagement = () => {
             api: {
               url: "/api/ListCustomRole",
               queryKey: "CustomRoleList",
-              labelField: "RoleName",
-              valueField: "RoleName",
+              labelField: "RowKey",
+              valueField: "RowKey",
               showRefresh: true,
             },
           },
