@@ -6,12 +6,12 @@ export const PrivateRoute = ({ children, routeType }) => {
   const {
     data: profile,
     error,
+    isError,
     isLoading,
   } = ApiGetCall({
     url: "/api/me",
     queryKey: "authmecipp",
     refetchOnWindowFocus: true,
-    staleTime: 120000, // 2 minutes
   });
 
   const session = ApiGetCall({
@@ -27,7 +27,7 @@ export const PrivateRoute = ({ children, routeType }) => {
   }
 
   if (isLoading) {
-    return "Loading...";
+    return <LoadingPage />;
   }
 
   let roles = null;
@@ -41,7 +41,7 @@ export const PrivateRoute = ({ children, routeType }) => {
     return <UnauthenticatedPage />;
   } else {
     const blockedRoles = ["anonymous", "authenticated"];
-    const userRoles = roles.filter((role) => !blockedRoles.includes(role));
+    const userRoles = roles?.filter((role) => !blockedRoles.includes(role)) ?? [];
     const isAuthenticated = userRoles.length > 0 && !error;
     const isAdmin = roles.includes("admin");
     if (routeType === "admin") {
