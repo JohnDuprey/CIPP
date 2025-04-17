@@ -70,6 +70,14 @@ export const CIPPTableToptoolbar = ({
   const pageName = router.pathname.split("/").slice(1).join("/");
   const currentTenant = useSettings()?.currentTenant;
 
+  const [actionMenuAnchor, setActionMenuAnchor] = useState(null);
+  const handleActionMenuOpen = (event) => setActionMenuAnchor(event.currentTarget);
+  const handleActionMenuClose = () => setActionMenuAnchor(null);
+
+  useEffect(() => {
+    //if usedData changes, deselect all rows
+    table.toggleAllRowsSelected(false);
+  }, [usedData]);
   //if the currentTenant Switches, remove Graph filters
   useEffect(() => {
     if (currentTenant) {
@@ -417,27 +425,41 @@ export const CIPPTableToptoolbar = ({
                   </MenuItem>
                 ))}
             </Menu>
-            {exportEnabled && (
-              <>
-                <PDFExportButton
-                  rows={table.getFilteredRowModel().rows}
-                  columns={usedColumns}
-                  reportName={title}
-                  columnVisibility={columnVisibility}
-                />
-                <CSVExportButton
-                  reportName={title}
-                  columnVisibility={columnVisibility}
-                  rows={table.getFilteredRowModel().rows}
-                  columns={usedColumns}
-                />
-              </>
-            )}
-            <Tooltip title="View API Response">
-              <IconButton onClick={() => setOffcanvasVisible(true)}>
-                <DeveloperMode />
-              </IconButton>
-            </Tooltip>
+
+            <>
+              {exportEnabled && (
+                <>
+                  <PDFExportButton
+                    rows={table.getFilteredRowModel().rows}
+                    columns={usedColumns}
+                    reportName={title}
+                    columnVisibility={columnVisibility}
+                  />
+                  <CSVExportButton
+                    reportName={title}
+                    columnVisibility={columnVisibility}
+                    rows={table.getFilteredRowModel().rows}
+                    columns={usedColumns}
+                  />
+                </>
+              )}
+              <Tooltip title="View API Response">
+                <IconButton onClick={() => setOffcanvasVisible(true)}>
+                  <DeveloperMode />
+                </IconButton>
+              </Tooltip>
+              {mdDown && (
+                <MRT_ToggleFullScreenButton table={table} />
+              )}
+            </>
+            {
+              //add a little icon with how many rows are selected
+              (table.getIsAllRowsSelected() || table.getIsSomeRowsSelected()) && (
+                <Typography variant="body2" sx={{ alignSelf: "center" }}>
+                  {table.getSelectedRowModel().rows.length} rows selected
+                </Typography>
+              )
+            }
             <CippOffCanvas
               size="xl"
               title="API Response"

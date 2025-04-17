@@ -6,7 +6,6 @@ export const PrivateRoute = ({ children, routeType }) => {
   const {
     data: profile,
     error,
-    isError,
     isLoading,
   } = ApiGetCall({
     url: "/api/me",
