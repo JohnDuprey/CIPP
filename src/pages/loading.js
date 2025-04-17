@@ -6,23 +6,25 @@ import { ApiGetCall } from "../api/ApiCall";
 import { useState, useEffect } from "react";
 
 const Page = () => {
-  const [loadingText, setLoadingText] = useState("Please wait while we get your account ready...");
+  const [loadingText, setLoadingText] = useState("Please wait while we log you in...");
   const orgData = ApiGetCall({
     url: "/api/me",
     queryKey: "authmecipp",
   });
 
-  const [loadingImage, setLoadingImage] = useState("/assets/illustrations/undraw_analysis_dq08.svg");
+  const [loadingImage, setLoadingImage] = useState(
+    "/assets/illustrations/undraw_analysis_dq08.svg"
+  );
 
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!orgData.isSuccess) {
         setLoadingText(
-          "The function app may be experiencing a cold start currently, this may take a little longer than usual..."
+          "The function app may be experiencing a cold start currently, this can take a little longer than usual..."
         );
         setLoadingImage("/assets/illustrations/undraw-into-the-night-nd84.svg");
       }
-    }, 45000); // 45 seconds
+    }, 20000); // 20 seconds
 
     return () => clearTimeout(timer);
   }, [orgData.isSuccess]);

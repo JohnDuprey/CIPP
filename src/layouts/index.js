@@ -252,6 +252,27 @@ export const Layout = (props) => {
         }}
       >
         <LayoutContainer>
+          <Dialog
+            fullWidth
+            maxWidth="lg"
+            onClose={createDialog.handleClose}
+            open={createDialog.open}
+          >
+            <DialogTitle>Setup Wizard</DialogTitle>
+            <DialogContent>
+              <Page />
+            </DialogContent>
+          </Dialog>
+          {!setupCompleted && (
+            <Box sx={{ flexGrow: 1, py: 2 }}>
+              <Container maxWidth={false}>
+                <Alert severity="info">
+                  Setup has not been completed.
+                  <Button onClick={createDialog.handleOpen}>Start Wizard</Button>
+                </Alert>
+              </Container>
+            </Box>
+          )}
           {(currentTenant === "AllTenants" || !currentTenant) && !allTenantsSupport ? (
             <Box sx={{ flexGrow: 1, py: 4 }}>
               <Container maxWidth={false}>
@@ -269,30 +290,7 @@ export const Layout = (props) => {
               </Container>
             </Box>
           ) : (
-            <>
-              <Dialog
-                fullWidth
-                maxWidth="lg"
-                onClose={createDialog.handleClose}
-                open={createDialog.open}
-              >
-                <DialogTitle>Setup Wizard</DialogTitle>
-                <DialogContent>
-                  <Page />
-                </DialogContent>
-              </Dialog>
-              {!setupCompleted && (
-                <Box sx={{ flexGrow: 1, py: 2 }}>
-                  <Container maxWidth={false}>
-                    <Alert severity="info">
-                      Setup has not been completed.
-                      <Button onClick={createDialog.handleOpen}>Start Wizard</Button>
-                    </Alert>
-                  </Container>
-                </Box>
-              )}
-              {children}
-            </>
+            <>{children}</>
           )}
           <Footer />
         </LayoutContainer>
